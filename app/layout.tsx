@@ -25,6 +25,9 @@ export default function RootLayout({
                 </h1>
               </a>
               <nav className="hidden md:flex space-x-8">
+                <a href="/articles" className="text-gray-700 hover:text-brand-blue transition">
+                  Browse
+                </a>
                 <a href="/issues" className="text-gray-700 hover:text-brand-blue transition">
                   Issues
                 </a>

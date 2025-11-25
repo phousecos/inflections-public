@@ -1,4 +1,5 @@
 import { getArticleBySlug, getArticles } from "@/lib/airtable";
+import MarkdownContent from "@/components/MarkdownContent";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -95,10 +96,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       {/* Article Content */}
       <div className="prose prose-lg prose-gray max-w-none">
         {article.content ? (
-          <div
-            dangerouslySetInnerHTML={{ __html: article.content }}
-            className="leading-relaxed [&>p]:mb-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-brand-jet [&>h2]:mt-10 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-brand-jet [&>h3]:mt-8 [&>h3]:mb-3 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-6 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-6 [&>blockquote]:border-l-4 [&>blockquote]:border-brand-blue [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-gray-600"
-          />
+          <MarkdownContent content={article.content} />
         ) : (
           <p className="text-gray-600 italic">
             Article content coming soon...

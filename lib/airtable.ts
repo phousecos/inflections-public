@@ -98,14 +98,23 @@ export async function getIssue(issueNumber: number): Promise<Issue | null> {
 // Fetch articles for a specific issue (by issue record ID)
 export async function getArticlesByIssueId(issueId: string): Promise<Article[]> {
   try {
+    // Fetch all articles and filter by issue ID in code
+    // This is more reliable than complex Airtable formulas for linked records
     const records = await base('Articles')
       .select({
-        filterByFormula: `FIND("${issueId}", ARRAYJOIN({Issue}))`,
         sort: [{ field: 'Title', direction: 'asc' }],
       })
       .all();
 
-    return records.map((record) => ({
+    // Filter to articles linked to this issue
+    const filtered = records.filter((record) => {
+      const issueField = record.get('Issue') as string[] | undefined;
+      return issueField && issueField.includes(issueId);
+    });
+
+    console.log(`Found ${filtered.length} articles for issue ${issueId} (out of ${records.length} total)`);
+
+    return filtered.map((record) => ({
       id: record.id,
       title: record.get('Title') as string,
       slug: slugify(record.get('Title') as string),

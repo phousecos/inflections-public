@@ -1,5 +1,6 @@
 import { getArticleBySlug, getArticles } from "@/lib/airtable";
 import MarkdownContent from "@/components/MarkdownContent";
+import SocialShare from "@/components/SocialShare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -38,7 +39,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   }
 
   return (
-    <article className="max-w-4xl mx-auto px-4 py-12">
+    <>
+      {/* Social Share - Floating sidebar on desktop, sticky bottom on mobile */}
+      <SocialShare title={article.title} />
+
+      <article className="max-w-4xl mx-auto px-4 py-12 pb-24 lg:pb-12">
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link
@@ -128,5 +133,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </div>
       </footer>
     </article>
+    </>
   );
 }

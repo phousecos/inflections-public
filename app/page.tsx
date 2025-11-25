@@ -1,4 +1,5 @@
 import { getIssues, getArticlesByIssueId } from "@/lib/airtable";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import Link from "next/link";
 
 export const revalidate = 3600; // Revalidate every hour
@@ -137,6 +138,11 @@ export default async function HomePage() {
           </Link>
         </div>
       )}
+
+      {/* Newsletter Signup */}
+      <div className="mt-16">
+        <NewsletterSignup variant="homepage" />
+      </div>
     </div>
   );
 }

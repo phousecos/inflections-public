@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -43,15 +44,44 @@ export default function RootLayout({
         </main>
         <footer className="bg-brand-jet text-white py-12">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-sm mb-4 md:mb-0">
-                © 2025 Inflections. All rights reserved.
+            <div className="grid md:grid-cols-3 gap-8 mb-8">
+              {/* Brand */}
+              <div>
+                <h2 className="text-2xl font-bold mb-3">
+                  <span className="text-brand-blue">Inflec</span>
+                  <span className="text-white">tions</span>
+                </h2>
+                <p className="text-gray-400 text-sm">
+                  The magazine for modern IT leadership. Insights on technology, 
+                  delivery, and the people who make it happen.
+                </p>
+              </div>
+
+              {/* Quick Links */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Explore</h3>
+                <ul className="space-y-2 text-gray-400 text-sm">
+                  <li><a href="/articles" className="hover:text-white transition">Browse Articles</a></li>
+                  <li><a href="/issues" className="hover:text-white transition">All Issues</a></li>
+                  <li><a href="/about" className="hover:text-white transition">About Inflections</a></li>
+                </ul>
+              </div>
+
+              {/* Newsletter */}
+              <div>
+                <NewsletterSignup variant="footer" />
+              </div>
+            </div>
+
+            <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+              <p className="text-sm text-gray-500 mb-4 md:mb-0">
+                © 2025 Inflections. A publication of Unlimited Powerhouse.
               </p>
               <div className="flex space-x-6">
-                <a href="/privacy" className="text-sm hover:text-brand-blue transition">
+                <a href="/privacy" className="text-sm text-gray-500 hover:text-white transition">
                   Privacy
                 </a>
-                <a href="/terms" className="text-sm hover:text-brand-blue transition">
+                <a href="/terms" className="text-sm text-gray-500 hover:text-white transition">
                   Terms
                 </a>
               </div>

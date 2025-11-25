@@ -30,113 +30,138 @@ export interface Article {
 
 // Fetch all issues
 export async function getIssues(): Promise<Issue[]> {
-  const records = await base('Issues')
-    .select({
-      sort: [{ field: 'Issue Number', direction: 'desc' }],
-    })
-    .all();
+  try {
+    const records = await base('Issues')
+      .select({
+        sort: [{ field: 'Issue Number', direction: 'desc' }],
+      })
+      .all();
 
-  return records.map((record) => ({
-    id: record.id,
-    number: record.get('Issue Number') as number,
-    title: record.get('Title') as string | undefined,
-    description: record.get('Description') as string | undefined,
-    publishedDate: record.get('Published Date') as string | undefined,
-    coverImage: record.get('Cover Image') as string | undefined,
-  }));
+    return records.map((record) => ({
+      id: record.id,
+      number: record.get('Issue Number') as number,
+      title: record.get('Title') as string | undefined,
+      description: record.get('Description') as string | undefined,
+      publishedDate: record.get('Publish Date') as string | undefined,
+      coverImage: undefined, // Field doesn't exist yet
+    }));
+  } catch (error) {
+    console.error('Error fetching issues:', error);
+    return [];
+  }
 }
 
 // Fetch single issue by number
 export async function getIssue(issueNumber: number): Promise<Issue | null> {
-  const records = await base('Issues')
-    .select({
-      filterByFormula: `{Issue Number} = ${issueNumber}`,
-      maxRecords: 1,
-    })
-    .all();
+  try {
+    const records = await base('Issues')
+      .select({
+        filterByFormula: `{Issue Number} = ${issueNumber}`,
+        maxRecords: 1,
+      })
+      .all();
 
-  if (records.length === 0) return null;
+    if (records.length === 0) return null;
 
-  const record = records[0];
-  return {
-    id: record.id,
-    number: record.get('Issue Number') as number,
-    title: record.get('Title') as string | undefined,
-    description: record.get('Description') as string | undefined,
-    publishedDate: record.get('Published Date') as string | undefined,
-    coverImage: record.get('Cover Image') as string | undefined,
-  };
+    const record = records[0];
+    return {
+      id: record.id,
+      number: record.get('Issue Number') as number,
+      title: record.get('Title') as string | undefined,
+      description: record.get('Description') as string | undefined,
+      publishedDate: record.get('Publish Date') as string | undefined,
+      coverImage: undefined, // Field doesn't exist yet
+    };
+  } catch (error) {
+    console.error('Error fetching issue:', error);
+    return null;
+  }
 }
 
 // Fetch articles for a specific issue
 export async function getArticlesByIssue(issueNumber: number): Promise<Article[]> {
-  const records = await base('Articles')
-    .select({
-      filterByFormula: `{Issue Number} = ${issueNumber}`,
-      sort: [{ field: 'Title', direction: 'asc' }],
-    })
-    .all();
+  try {
+    const records = await base('Articles')
+      .select({
+        filterByFormula: `{Issue Number} = ${issueNumber}`,
+        sort: [{ field: 'Title', direction: 'asc' }],
+      })
+      .all();
 
-  return records.map((record) => ({
-    id: record.id,
-    title: record.get('Title') as string,
-    slug: record.get('Slug') as string || slugify(record.get('Title') as string),
-    content: record.get('Content') as string | undefined,
-    excerpt: record.get('Excerpt') as string | undefined,
-    author: record.get('Author') as string | undefined,
-    pillar: record.get('Pillar') as string | undefined,
-    issueNumber: record.get('Issue Number') as number | undefined,
-    publishedDate: record.get('Published Date') as string | undefined,
-    coverImage: record.get('Cover Image') as string | undefined,
-  }));
+    return records.map((record) => ({
+      id: record.id,
+      title: record.get('Title') as string,
+      slug: record.get('Slug') as string || slugify(record.get('Title') as string),
+      content: record.get('Content') as string | undefined,
+      excerpt: record.get('Excerpt') as string | undefined,
+      author: record.get('Author') as string | undefined,
+      pillar: record.get('Pillar') as string | undefined,
+      issueNumber: record.get('Issue Number') as number | undefined,
+      publishedDate: record.get('Publish Date') as string | undefined,
+      coverImage: undefined, // Field doesn't exist yet
+    }));
+  } catch (error) {
+    console.error('Error fetching articles by issue:', error);
+    return [];
+  }
 }
 
 // Fetch single article by slug
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const records = await base('Articles')
-    .select({
-      filterByFormula: `{Slug} = '${slug}'`,
-      maxRecords: 1,
-    })
-    .all();
+  try {
+    const records = await base('Articles')
+      .select({
+        filterByFormula: `{Slug} = '${slug}'`,
+        maxRecords: 1,
+      })
+      .all();
 
-  if (records.length === 0) return null;
+    if (records.length === 0) return null;
 
-  const record = records[0];
-  return {
-    id: record.id,
-    title: record.get('Title') as string,
-    slug: record.get('Slug') as string || slugify(record.get('Title') as string),
-    content: record.get('Content') as string | undefined,
-    excerpt: record.get('Excerpt') as string | undefined,
-    author: record.get('Author') as string | undefined,
-    pillar: record.get('Pillar') as string | undefined,
-    issueNumber: record.get('Issue Number') as number | undefined,
-    publishedDate: record.get('Published Date') as string | undefined,
-    coverImage: record.get('Cover Image') as string | undefined,
-  };
+    const record = records[0];
+    return {
+      id: record.id,
+      title: record.get('Title') as string,
+      slug: record.get('Slug') as string || slugify(record.get('Title') as string),
+      content: record.get('Content') as string | undefined,
+      excerpt: record.get('Excerpt') as string | undefined,
+      author: record.get('Author') as string | undefined,
+      pillar: record.get('Pillar') as string | undefined,
+      issueNumber: record.get('Issue Number') as number | undefined,
+      publishedDate: record.get('Publish Date') as string | undefined,
+      coverImage: undefined, // Field doesn't exist yet
+    };
+  } catch (error) {
+    console.error('Error fetching article by slug:', error);
+    return null;
+  }
 }
 
 // Fetch all articles
 export async function getArticles(): Promise<Article[]> {
-  const records = await base('Articles')
-    .select({
-      sort: [{ field: 'Published Date', direction: 'desc' }],
-    })
-    .all();
+  try {
+    const records = await base('Articles')
+      .select({
+        sort: [{ field: 'Publish Date', direction: 'desc' }],
+      })
+      .all();
 
-  return records.map((record) => ({
-    id: record.id,
-    title: record.get('Title') as string,
-    slug: record.get('Slug') as string || slugify(record.get('Title') as string),
-    content: record.get('Content') as string | undefined,
-    excerpt: record.get('Excerpt') as string | undefined,
-    author: record.get('Author') as string | undefined,
-    pillar: record.get('Pillar') as string | undefined,
-    issueNumber: record.get('Issue Number') as number | undefined,
-    publishedDate: record.get('Published Date') as string | undefined,
-    coverImage: record.get('Cover Image') as string | undefined,
-  }));
+    return records.map((record) => ({
+      id: record.id,
+      title: record.get('Title') as string,
+      slug: record.get('Slug') as string || slugify(record.get('Title') as string),
+      content: record.get('Content') as string | undefined,
+      excerpt: record.get('Excerpt') as string | undefined,
+      author: record.get('Author') as string | undefined,
+      pillar: record.get('Pillar') as string | undefined,
+      issueNumber: record.get('Issue Number') as number | undefined,
+      publishedDate: record.get('Publish Date') as string | undefined,
+      coverImage: undefined, // Field doesn't exist yet
+    }));
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    return [];
+  }
 }
 
 // Helper function to create slugs

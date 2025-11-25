@@ -1,11 +1,11 @@
-import { getIssues } from "@/lib/airtable";
+import { getIssues, getArticlesByIssueId } from "@/lib/airtable";
 import Link from "next/link";
 
 export const revalidate = 3600; // Revalidate every hour
 
 export const metadata = {
   title: "All Issues - Inflections",
-  description: "Browse all issues of Inflections magazine",
+  description: "Browse all published issues of Inflections magazine",
 };
 
 export default async function IssuesPage() {
@@ -29,50 +29,107 @@ export default async function IssuesPage() {
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {issues.map((issue) => (
-            <Link
-              key={issue.id}
-              href={`/issues/${issue.number}`}
-              className="group"
-            >
-              <article className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden h-full">
-                {issue.coverImage && (
-                  <div className="aspect-[3/4] bg-gray-200">
-                    <img
-                      src={issue.coverImage}
-                      alt={`Issue ${issue.number}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-6">
-                  <div className="text-brand-blue font-semibold text-sm uppercase tracking-wide mb-2">
-                    Issue {issue.number}
-                  </div>
-                  {issue.title && (
-                    <h2 className="text-2xl font-bold text-brand-jet mb-2 group-hover:text-brand-blue transition">
+        <div className="space-y-16">
+          {issues.map(async (issue) => {
+            const articles = await getArticlesByIssueId(issue.id);
+            
+            return (
+              <section key={issue.id} className="border-b border-gray-200 pb-12 last:border-0">
+                {/* Issue Header */}
+                <header className="mb-8">
+                  <Link href={`/issues/${issue.number}`} className="group">
+                    <p className="text-brand-blue font-semibold text-sm uppercase tracking-wide mb-2">
+                      Issue {issue.number}
+                    </p>
+                    <h2 className="text-3xl font-bold text-brand-jet group-hover:text-brand-blue transition mb-2">
                       {issue.title}
                     </h2>
-                  )}
-                  {issue.description && (
-                    <p className="text-gray-600 text-sm line-clamp-3">
-                      {issue.description}
-                    </p>
-                  )}
-                  {issue.publishedDate && (
-                    <p className="text-sm text-gray-500 mt-4">
-                      {new Date(issue.publishedDate).toLocaleDateString('en-US', {
+                  </Link>
+                  {issue.publishDate && (
+                    <p className="text-gray-500 text-sm">
+                      Published {new Date(issue.publishDate).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',
                       })}
                     </p>
                   )}
-                </div>
-              </article>
-            </Link>
-          ))}
+                  {issue.themeDescription && (
+                    <p className="text-gray-600 mt-3">
+                      {issue.themeDescription}
+                    </p>
+                  )}
+                </header>
+
+                {/* Articles */}
+                {articles.length > 0 && (
+                  <div className="space-y-6">
+                    {articles.map((article) => (
+                      <article
+                        key={article.id}
+                        className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
+                      >
+                        <div className="flex flex-col md:flex-row">
+                          {/* Image */}
+                          {article.featuredImageUrl && (
+                            <div className="md:w-40 md:h-40 flex-shrink-0">
+                              <img
+                                src={article.featuredImageUrl}
+                                alt={article.title}
+                                className="w-full h-40 md:h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          
+                          {/* Content */}
+                          <div className="flex-1 p-5">
+                            {/* Pillar Tag */}
+                            {article.pillar && (
+                              <span className="inline-block text-xs font-semibold text-brand-blue uppercase tracking-wide mb-2 bg-blue-50 px-2 py-1 rounded">
+                                {article.pillar}
+                              </span>
+                            )}
+                            
+                            {/* Title */}
+                            <h3 className="text-lg font-bold text-brand-jet mb-2">
+                              <Link
+                                href={`/articles/${article.slug}`}
+                                className="hover:text-brand-blue transition"
+                              >
+                                {article.title}
+                              </Link>
+                            </h3>
+                            
+                            {/* Excerpt */}
+                            {article.excerpt && (
+                              <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                                {article.excerpt}
+                              </p>
+                            )}
+                            
+                            {/* Footer */}
+                            <div className="flex items-center justify-between">
+                              {article.author && (
+                                <span className="text-xs text-gray-500">
+                                  By {article.author}
+                                </span>
+                              )}
+                              <Link
+                                href={`/articles/${article.slug}`}
+                                className="text-brand-blue font-semibold text-sm hover:underline"
+                              >
+                                Read Full Article →
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       )}
     </div>

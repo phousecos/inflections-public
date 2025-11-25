@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 export const revalidate = 3600; // Revalidate every hour
 
-// Generate static params for all articles
+// Generate static params for all articles in published issues
 export async function generateStaticParams() {
   const articles = await getArticles();
   return articles.map((article) => ({
@@ -41,7 +41,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       {/* Breadcrumb */}
       <div className="mb-8">
         <Link
-          href={article.issueNumber ? `/issues/${article.issueNumber}` : "/issues"}
+          href={article.issueNumber ? `/issues/${article.issueNumber}` : "/"}
           className="text-brand-blue hover:underline"
         >
           ← Back to Issue {article.issueNumber || ""}
@@ -49,13 +49,13 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       </div>
 
       {/* Article Header */}
-      <header className="mb-12">
+      <header className="mb-10">
         {article.pillar && (
-          <div className="text-brand-blue font-semibold text-sm uppercase tracking-wide mb-4">
+          <span className="inline-block text-sm font-semibold text-brand-blue uppercase tracking-wide mb-4 bg-blue-50 px-3 py-1 rounded">
             {article.pillar}
-          </div>
+          </span>
         )}
-        <h1 className="text-4xl md:text-5xl font-bold text-brand-jet mb-6 leading-tight">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-jet mb-6 leading-tight">
           {article.title}
         </h1>
         {article.excerpt && (
@@ -63,15 +63,15 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             {article.excerpt}
           </p>
         )}
-        <div className="flex items-center space-x-4 text-sm text-gray-500 border-t border-gray-200 pt-6">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 border-t border-gray-200 pt-6">
           {article.author && (
             <span className="font-semibold text-brand-jet">
               By {article.author}
             </span>
           )}
-          {article.publishedDate && (
+          {article.publishDate && (
             <span>
-              {new Date(article.publishedDate).toLocaleDateString('en-US', {
+              {new Date(article.publishDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -81,11 +81,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         </div>
       </header>
 
-      {/* Cover Image */}
-      {article.coverImage && (
-        <div className="mb-12">
+      {/* Featured Image */}
+      {article.featuredImageUrl && (
+        <div className="mb-10">
           <img
-            src={article.coverImage}
+            src={article.featuredImageUrl}
             alt={article.title}
             className="w-full rounded-lg shadow-md"
           />
@@ -97,7 +97,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         {article.content ? (
           <div
             dangerouslySetInnerHTML={{ __html: article.content }}
-            className="leading-relaxed"
+            className="leading-relaxed [&>p]:mb-6 [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-brand-jet [&>h2]:mt-10 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-brand-jet [&>h3]:mt-8 [&>h3]:mb-3 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:mb-6 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:mb-6 [&>blockquote]:border-l-4 [&>blockquote]:border-brand-blue [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-gray-600"
           />
         ) : (
           <p className="text-gray-600 italic">
@@ -108,7 +108,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
       {/* Article Footer */}
       <footer className="mt-12 pt-8 border-t border-gray-200">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             {article.issueNumber && (
               <Link
@@ -121,10 +121,10 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           </div>
           <div>
             <Link
-              href="/issues"
+              href="/"
               className="text-brand-blue hover:underline"
             >
-              Browse All Issues →
+              View Latest Issue →
             </Link>
           </div>
         </div>

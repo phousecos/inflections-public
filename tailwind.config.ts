@@ -22,9 +22,42 @@ const config: Config = {
       fontFamily: {
         sans: ["Poppins", "system-ui", "sans-serif"],
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: '#2D2D2D',
+            a: {
+              color: '#0020C2',
+              '&:hover': {
+                color: '#0020C2',
+              },
+            },
+            h1: {
+              color: '#2D2D2D',
+            },
+            h2: {
+              color: '#2D2D2D',
+            },
+            h3: {
+              color: '#2D2D2D',
+            },
+            h4: {
+              color: '#2D2D2D',
+            },
+            strong: {
+              color: '#2D2D2D',
+            },
+            blockquote: {
+              borderLeftColor: '#0020C2',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };
 
 export default config;

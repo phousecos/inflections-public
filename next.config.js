@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['dl.airtable.com'], // Allow Airtable images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'dl.airtable.com',
+      },
+    ],
   },
 };
 
